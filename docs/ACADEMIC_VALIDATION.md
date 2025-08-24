@@ -387,10 +387,10 @@ The Academic Validation Framework for Fractional Core ensures that research appl
 - **Community Review**: community@fc-goukassian.org
 
 **Additional Resources**:
-- **Implementation Guide**: [/docs/QUICK_START.md](docs/QUICK_START.md)
-- **Technical FAQ**: [/docs/GENERAL_FAQ.md](docs/GENERAL_FAQ.md)  
-- **API Documentation**: [/docs/api/complete_api_reference.md](docs/api/complete_api_reference.md)
-- **Safety Guidelines**: [/docs/MANDATORY.md](docs/MANDATORY.md)
+- **Implementation Guide**: [docs/QUICK_START.md](/docs/QUICK_START.md)
+- **Technical FAQ**: [docs/GENERAL_FAQ.md](/docs/GENERAL_FAQ.md)  
+- **API Documentation**: [docs/api/complete_api_reference.md](/docs/api/complete_api_reference.md)
+- **Safety Guidelines**: [docs/MANDATORY.md](/docs/MANDATORY.md)
 
 ---
 
