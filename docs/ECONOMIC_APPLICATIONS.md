@@ -10,7 +10,7 @@ The applications below are organized by implementation readiness and technical m
 
 ---
 
-##  **Immediate Applications** (Ready for deployment)
+## **Immediate Applications** (Ready for deployment)
 
 ### 1. Digital Identity & Decentralized Finance (DeFi)
 
