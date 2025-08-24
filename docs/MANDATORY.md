@@ -205,4 +205,4 @@ Memorial Covenant: All uses contribute to cancer research
 Created by Lev Goukassian • ORCID: 0009-0006-5966-1243  
 Email: leogouk@gmail.com  
 Successor Contact: support@fc-goukassian.org  
-See Succession Charter [FC-SUCCESSION-CHARTER.md](FC-SUCCESSION-CHARTER.md)
+See Succession Charter [FC-SUCCESSION-CHARTER.md](/FC-SUCCESSION-CHARTER.md)
