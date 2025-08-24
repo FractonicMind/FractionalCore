@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fractional Core Interactive Demo</title>
+    <style>
+        body {
+            font-family: 'Monaco', 'Consolas', monospace;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .subtitle {
+            font-style: italic;
+            margin: 10px 0;
+            opacity: 0.9;
+        }
+        
+        .memorial {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .demo-section {
+            background: rgba(255, 255, 255, 0.05);
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .input-group {
+            margin: 15px 0;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            font-family: inherit;
+        }
+        
+        .button {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .button:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+        
+        .output {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 5px;
+            margin: 20px 0;
+        }
+        
+        .grid-cell {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px;
+            text-align: center;
+            border-radius: 3px;
+            min-height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        
+        .grid-cell.one {
+            background: rgba(76, 175, 80, 0.3);
+            border: 1px solid #4CAF50;
+        }
+        
+        .grid-cell.zero {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .covenant-tracker {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(76, 175, 80, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            max-width: 300px;
+        }
+        
+        .fractions-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .fraction-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Fractional Core</h1>
+            <div class="subtitle">When Math Becomes Secret Code</div>
+            <div class="memorial">
+                <strong>"Truth is fractional. Hope is not."</strong><br>
+                — Lev Goukassian, 2025
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>🎯 Try It Yourself</h2>
+            <div class="input-group">
+                <label for="messageInput">Enter text to encode (max 3 characters for demo):</label>
+                <input type="text" id="messageInput" maxlength="3" placeholder="LEV" value="LEV">
+            </div>
+            <button class="button" onclick="encodeMessage()">Encode with Fractional Core</button>
+            <button class="button" onclick="showBinary()">Show Binary Comparison</button>
+        </div>
+
+        <div class="demo-section">
+            <h2>📊 Mathematical Expressions Grid</h2>
+            <div id="encodedGrid" class="grid">
+                <!-- Grid will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>🧮 Available Mathematical Fractions</h2>
+            <p>All of these expressions equal 1:</p>
+            <div class="fractions-list" id="fractionsList">
+                <!-- Fractions will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>🔍 Verification Test</h2>
+            <p>Test your mathematical literacy:</p>
+            <div class="input-group">
+                <label for="expressionInput">Enter a mathematical expression:</label>
+                <input type="text" id="expressionInput" placeholder="√36/6">
+            </div>
+            <button class="button" onclick="verifyExpression()">Verify = 1?</button>
+            <div id="verificationResult" class="output" style="display: none;"></div>
+        </div>
+
+        <div class="demo-section">
+            <h2>📈 Binary Comparison</h2>
+            <div id="binaryComparison" class="output" style="display: none;"></div>
+        </div>
+    </div>
+
+    <div class="covenant-tracker">
+        <strong>🤝 Memorial Covenant Active</strong><br>
+        Verifications: <span id="verificationCount">0</span><br>
+        Contributing to cancer research<br>
+        <small>Every use honors Lev Goukassian's legacy</small>
+    </div>
+
+    <script>
+        // Fractional Core implementation for demo
+        let verificationCount = 0;
+
+        const standardFractions = [
+            { expr: "√1", value: 1 },
+            { expr: "0!", value: 1 },
+            { expr: "|−1|", value: 1 },
+            { expr: "7^0", value: 1 },
+            { expr: "(2+2)/4", value: 1 },
+            { expr: "1/1", value: 1 },
+            { expr: "2-1", value: 1 },
+            { expr: "√4/2", value: 1 },
+            { expr: "(3-1)/2", value: 1 },
+            { expr: "√9/3", value: 1 },
+            { expr: "0.25*4", value: 1 },
+            { expr: "√16/4", value: 1 },
+            { expr: "√25/5", value: 1 },
+            { expr: "(6-4)/2", value: 1 },
+            { expr: "√36/6", value: 1 },
+            { expr: "√49/7", value: 1 }
+        ];
+
+        function encodeMessage() {
+            const message = document.getElementById('messageInput').value.toUpperCase();
+            if (!message) return;
+
+            updateVerificationCount();
+            
+            const binary = message.split('').map(char => 
+                char.charCodeAt(0).toString(2).padStart(8, '0')
+            ).join('');
+
+            const grid = document.getElementById('encodedGrid');
+            grid.innerHTML = '';
+
+            let fractionIndex = 0;
+            for (let i = 0; i < binary.length; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'grid-cell';
+                
+                if (binary[i] === '1') {
+                    const fraction = standardFractions[fractionIndex % standardFractions.length];
+                    cell.textContent = `(${fraction.expr})`;
+                    cell.classList.add('one');
+                    fractionIndex++;
+                } else {
+                    cell.textContent = '0';
+                    cell.classList.add('zero');
+                }
+                
+                grid.appendChild(cell);
+            }
+        }
+
+        function showBinary() {
+            const message = document.getElementById('messageInput').value.toUpperCase();
+            if (!message) return;
+
+            const binary = message.split('').map(char => {
+                const code = char.charCodeAt(0);
+                const bin = code.toString(2).padStart(8, '0');
+                return `${char} = ${code} = ${bin}`;
+            }).join('\n');
+
+            const comparison = document.getElementById('binaryComparison');
+            comparison.style.display = 'block';
+            comparison.innerHTML = `
+                <strong>Traditional Binary Encoding:</strong><br>
+                ${binary}<br><br>
+                <strong>Fractional Core Encoding:</strong><br>
+                Uses mathematical expressions instead of 1s<br>
+                Result: Looks like homework, not encoded data!
+            `;
+        }
+
+        function verifyExpression() {
+            const expr = document.getElementById('expressionInput').value;
+            const result = document.getElementById('verificationResult');
+            
+            updateVerificationCount();
+            
+            // Simple verification for demo
+            const isValid = standardFractions.some(f => f.expr === expr && f.value === 1);
+            
+            result.style.display = 'block';
+            result.innerHTML = `
+                <strong>Expression:</strong> ${expr}<br>
+                <strong>Equals 1?</strong> ${isValid ? '✅ YES - Valid Fractional Core expression!' : '❌ NO - Does not equal 1'}<br>
+                <strong>Mathematical Literacy:</strong> ${isValid ? 'Verified ✅' : 'Not verified ❌'}
+            `;
+        }
+
+        function updateVerificationCount() {
+            verificationCount++;
+            document.getElementById('verificationCount').textContent = verificationCount;
+        }
+
+        function populateFractions() {
+            const list = document.getElementById('fractionsList');
+            standardFractions.slice(0, 12).forEach(f => {
+                const card = document.createElement('div');
+                card.className = 'fraction-card';
+                card.innerHTML = `<strong>${f.expr}</strong><br>= ${f.value}`;
+                list.appendChild(card);
+            });
+        }
+
+        // Initialize demo
+        window.onload = function() {
+            populateFractions();
+            encodeMessage(); // Show LEV by default
+            
+            // Memorial covenant message
+            console.log("🤝 Memorial Covenant Active");
+            console.log("🏥 Every verification contributes to cancer research");
+            console.log("🧬 Lev Goukassian, 2025: Truth is fractional. Hope is not.");
+        };
+    </script>
+</body>
+</html>
