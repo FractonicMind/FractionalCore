@@ -199,7 +199,7 @@ By executing this voluntary succession declaration, I ensure that Fractional Cor
 **Creator**: leogouk@gmail.com  
 **Succession Support**: support@fc-goukassian.org (to be established)  
 **Repository**: https://github.com/FractonicMind/FractionalCore  
-**Charter Reference**: FC-SUCCESSION-CHARTER.md
+**Charter Reference**: [FC-SUCCESSION-CHARTER.md](FC-SUCCESSION-CHARTER.md)
 
 ---
 
