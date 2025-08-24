@@ -41,6 +41,8 @@ For every verification event using Fractional Core, we will contribute a **meani
 
 The following institutions are approved for immediate deployment upon covenant acceptance:
 
+### Primary Research Institutions
+
 ### MIT Media Lab
 - **Commitment**: Deploy FC for AI-driven cancer research modeling
 - **Contribution**: Compute resources for open research
@@ -55,6 +57,52 @@ The following institutions are approved for immediate deployment upon covenant a
 - **Commitment**: Integrate FC into tumor-simulation platforms
 - **Contribution**: Open-source code and datasets
 - **Timeline**: ≤24 hours from approval
+
+### Cancer Research Centers
+
+### Memorial Sloan Kettering Cancer Center
+- **Commitment**: Implement FC for patient data verification and research collaboration
+- **Contribution**: Clinical trial data access for approved researchers
+- **Timeline**: ≤72 hours from approval
+
+### Dana-Farber Cancer Institute
+- **Commitment**: Deploy FC for secure research data sharing
+- **Contribution**: Funding for early-career cancer researchers
+- **Timeline**: ≤72 hours from approval
+
+### National Cancer Institute (NIH)
+- **Commitment**: Integrate FC into federal cancer research databases
+- **Contribution**: Grant funding for FC-related cancer research projects
+- **Timeline**: ≤120 hours from approval
+
+### Educational Organizations
+
+### Khan Academy
+- **Commitment**: Use FC for mathematical literacy verification in educational content
+- **Contribution**: Free FC-based mathematical puzzles and educational tools
+- **Timeline**: ≤48 hours from approval
+
+### University of Oxford
+- **Commitment**: Deploy FC in mathematics and computer science departments
+- **Contribution**: Graduate student research positions focused on FC applications
+- **Timeline**: ≤96 hours from approval
+
+### International Bodies
+
+### CERN
+- **Commitment**: Implement FC for scientific collaboration and data verification
+- **Contribution**: High-performance computing resources for FC research
+- **Timeline**: ≤96 hours from approval
+
+### Gates Foundation
+- **Commitment**: Use FC for global health education and verification systems
+- **Contribution**: Funding for FC implementations in developing regions
+- **Timeline**: ≤120 hours from approval
+
+### World Health Organization
+- **Commitment**: Deploy FC for global health data verification and research coordination
+- **Contribution**: Platform for international FC-based health research collaboration
+- **Timeline**: ≤120 hours from approval
 
 ## Covenant Enforcement
 
@@ -116,7 +164,7 @@ ________________________________
 
 ## Approval
 
-**Name**: _______________________ **Date**: _____________
+**Institution Name Approval**: _______________________ **Date**: _____________
 
 ---
 
