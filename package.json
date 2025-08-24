@@ -1,0 +1,78 @@
+{
+  "name": "fractional-core",
+  "version": "1.0.0",
+  "description": "Revolutionary encoding using mathematical expression diversity. Replace binary 1s with √1, 2-1, 0!, etc. Enables steganography in educational materials and crypto-education.",
+  "main": "src/fractional-core.js",
+  "bin": {
+    "fractional-core": "./bin/fc-cli.js"
+  },
+  "scripts": {
+    "start": "node demo.js",
+    "demo": "node examples/demo.js",
+    "test": "node test/test.js",
+    "covenant": "node covenant/verify-agreement.js",
+    "memorial": "node memorial/verification.js"
+  },
+  "keywords": [
+    "cryptography",
+    "mathematics",
+    "education",
+    "steganography",
+    "encoding",
+    "memorial",
+    "covenant",
+    "cancer-research",
+    "mathematical-literacy",
+    "identity-verification"
+  ],
+  "author": {
+    "name": "Lev Goukassian",
+  },
+   "license": "Memorial Covenant License - See covenant/LICENSE.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FractonicMind/FractionalCore.git"
+  },
+  "homepage": "https://github.com/FractonicMind/FractionalCore#readme",
+  "bugs": {
+    "url": "https://github.com/FractonicMind/FractionalCore/issues"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "mathjs": "^11.11.0"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0"
+  },
+  "memorial": {
+    "origin": "Lev Goukassian, 2025: Truth is fractional. Hope is not.",
+    "mission": "Today-tomorrow we will solve cancer as an illness at its root. Humanity will get rid of this horrible disease once and forever.",
+    "binary": "01001100 01100101 01110110 00100000 01000111 01101111 01110101 01101011 01100001 01110011 01110011 01101001 01100001 01101110"
+  },
+  "covenant": {
+    "required": true,
+    "enforcement": "code-level",
+    "institutions": [
+      {
+        "name": "MIT Media Lab",
+        "commitment": "AI-driven cancer research modeling",
+        "timeline": "24 hours",
+        "status": "pre-authorized"
+      },
+      {
+        "name": "African Institute for Mathematical Sciences (AIMS)",
+        "commitment": "Student verification for research access",
+        "timeline": "48 hours", 
+        "status": "pre-authorized"
+      },
+      {
+        "name": "Stanford Bio-X",
+        "commitment": "Tumor simulation platform integration",
+        "timeline": "24 hours",
+        "status": "pre-authorized"
+      }
+    ]
+  }
+}
