@@ -26,6 +26,11 @@ class MathematicalCAPTCHA {
     generateChallenge(difficulty = 'medium') {
         const sessionId = `CAPTCHA-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
         
+        // Auto-detect grandma mode
+        if (difficulty === 'grandma' || difficulty === 'easy') {
+            return this.generateGrandmaChallenge(sessionId);
+        }
+        
         // Select target value based on difficulty
         const target = this._selectTargetValue(difficulty);
         
@@ -58,10 +63,123 @@ class MathematicalCAPTCHA {
             challenges: visualChallenges.map(v => ({
                 id: v.id,
                 display: v.display,
-                type: v.type
+                type: v.type,
+                helpText: v.helpText // Add help for each option
             })),
             expiresIn: 300,
-            hint: this._generateHint(target, difficulty)
+            hint: this._generateHint(target, difficulty),
+            calculator: difficulty === 'medium', // Provide calculator for medium
+            audioOption: true // Always provide audio alternative
+        };
+    }
+    
+    /**
+     * Generate grandma-friendly challenge
+     */
+    generateGrandmaChallenge(sessionId) {
+        // Pick a simple number (1-5)
+        const target = Math.floor(Math.random() * 5) + 1;
+        
+        // Create very simple, visual challenges
+        const challenges = [];
+        const correctOptions = [];
+        const wrongOptions = [];
+        
+        // Direct number - always include
+        correctOptions.push({
+            id: `opt-1`,
+            display: String(target),
+            helpText: `This is the number ${target}`,
+            visual: 'large-text',
+            isValid: true
+        });
+        
+        // Word version
+        const words = ['zero', 'one', 'two', 'three', 'four', 'five'];
+        correctOptions.push({
+            id: `opt-2`,
+            display: words[target].toUpperCase(),
+            helpText: `This spells "${words[target]}"`,
+            visual: 'word',
+            isValid: true
+        });
+        
+        // Visual representation (dots, stars, hearts)
+        const symbols = ['●', '★', '♥', '■', '▲'];
+        const symbol = symbols[Math.floor(Math.random() * symbols.length)];
+        correctOptions.push({
+            id: `opt-3`,
+            display: symbol.repeat(target),
+            helpText: `Count: there are ${target} symbols`,
+            visual: 'symbols',
+            isValid: true
+        });
+        
+        // Simple addition (only if target > 1)
+        if (target > 1) {
+            correctOptions.push({
+                id: `opt-4`,
+                display: `1 + ${target - 1}`,
+                helpText: `One plus ${target - 1} equals ${target}`,
+                visual: 'simple-math',
+                isValid: true
+            });
+        }
+        
+        // Add wrong options (different numbers)
+        for (let i = 1; i <= 5; i++) {
+            if (i !== target) {
+                wrongOptions.push({
+                    id: `wrong-${i}`,
+                    display: String(i),
+                    helpText: `This is the number ${i}`,
+                    visual: 'large-text',
+                    isValid: false
+                });
+            }
+        }
+        
+        // Mix correct and wrong options
+        const allOptions = [
+            ...correctOptions.slice(0, 3), // Use 3 correct
+            ...wrongOptions.slice(0, 3)     // Use 3 wrong
+        ];
+        
+        // Shuffle
+        const shuffled = this._shuffle(allOptions);
+        
+        // Store challenge
+        const challenge = {
+            sessionId,
+            target,
+            difficulty: 'grandma',
+            visual: shuffled,
+            created: Date.now(),
+            expires: Date.now() + 600000, // 10 minutes for grandma
+            attempts: 0,
+            maxAttempts: 5 // More attempts for grandma
+        };
+        
+        this.challenges.set(sessionId, challenge);
+        
+        return {
+            sessionId,
+            instruction: `Click all boxes that show the number ${words[target]} (${target})`,
+            helpMessage: 'Take your time. You can click the speaker button to hear instructions.',
+            challenges: shuffled.map(opt => ({
+                id: opt.id,
+                display: opt.display,
+                type: opt.visual,
+                helpText: opt.helpText,
+                audioHelp: `/audio/help/${opt.id}.mp3`
+            })),
+            expiresIn: 600,
+            hint: `Look for: the number ${target}, the word "${words[target]}", or ${target} symbols`,
+            calculator: false, // Not needed for grandma mode
+            audioOption: true,
+            fontSize: 'extra-large',
+            highContrast: true,
+            showCorrectCount: true // Shows "You've selected 2 of 3 correct answers"
         };
     }
 
@@ -99,11 +217,24 @@ class MathematicalCAPTCHA {
             this.challenges.delete(sessionId);
         }
         
+        // Grandma mode - more encouraging feedback
+        if (challenge.difficulty === 'grandma') {
+            if (verification.valid) {
+                verification.feedback = 'Perfect! You got it right! ✨';
+            } else if (verification.score >= 0.5) {
+                verification.feedback = 'Almost there! Try again, you can do it!';
+            } else {
+                verification.feedback = `Remember: look for the number ${challenge.target} in any form`;
+            }
+        }
+        
         return {
             valid: verification.valid,
             score: verification.score,
             feedback: verification.feedback,
-            attemptsRemaining: challenge.maxAttempts - challenge.attempts
+            attemptsRemaining: challenge.maxAttempts - challenge.attempts,
+            encouragement: challenge.difficulty === 'grandma' ? 
+                'Take your time, there\'s no rush!' : null
         };
     }
 
@@ -138,8 +269,22 @@ class MathematicalCAPTCHA {
         const valid = [];
         const decoys = [];
         
-        // Generate valid expressions
-        if (difficulty === 'easy') {
+        // Grandma mode - very simple
+        if (difficulty === 'grandma') {
+            const words = ['zero', 'one', 'two', 'three', 'four', 'five'];
+            valid.push(
+                `${target}`,
+                words[target],
+                '●'.repeat(target),
+                target > 1 ? `1 + ${target - 1}` : `${target}`
+            );
+            
+            for (let i = 1; i <= 5; i++) {
+                if (i !== target) {
+                    decoys.push(`${i}`, words[i]);
+                }
+            }
+        } else if (difficulty === 'easy') {
             valid.push(
                 `${target}`,
                 `${target - 1} + 1`,
@@ -199,6 +344,13 @@ class MathematicalCAPTCHA {
      */
     _createVisualChallenges(expressions, difficulty) {
         const challenges = [];
+        
+        // Handle grandma mode separately
+        if (difficulty === 'grandma') {
+            // Grandma mode is handled in generateGrandmaChallenge
+            return [];
+        }
+        
         const allExpressions = [...expressions.valid, ...expressions.decoys];
         
         // Shuffle expressions
@@ -213,17 +365,53 @@ class MathematicalCAPTCHA {
                 expression: expr,
                 isValid,
                 type: this._selectDisplayType(difficulty),
-                position: this._randomPosition()
+                position: this._randomPosition(),
+                helpText: difficulty === 'easy' ? `This equals ${this._evaluateSimple(expr)}` : null
             });
         });
         
         return challenges;
+    }
+    
+    /**
+     * Simple evaluation for help text
+     */
+    _evaluateSimple(expr) {
+        // Very basic evaluation for help text
+        try {
+            // Handle the simplest cases
+            if (!isNaN(expr)) return expr;
+            if (expr.includes('+')) {
+                const parts = expr.split('+').map(p => parseFloat(p.trim()));
+                return parts.reduce((a, b) => a + b, 0);
+            }
+            if (expr.includes('-') && !expr.startsWith('-')) {
+                const parts = expr.split('-').map(p => parseFloat(p.trim()));
+                return parts[0] - parts[1];
+            }
+            if (expr.includes('×') || expr.includes('*')) {
+                const parts = expr.split(/[×*]/).map(p => parseFloat(p.trim()));
+                return parts.reduce((a, b) => a * b, 1);
+            }
+            if (expr.includes('/') || expr.includes('÷')) {
+                const parts = expr.split(/[/÷]/).map(p => parseFloat(p.trim()));
+                return parts[0] / parts[1];
+            }
+            return '?';
+        } catch {
+            return '?';
+        }
     }
 
     /**
      * Format expression for display
      */
     _formatExpression(expr, difficulty) {
+        // Grandma mode - keep it super simple
+        if (difficulty === 'grandma') {
+            return expr; // Already simple
+        }
+        
         // Add visual noise based on difficulty
         if (difficulty === 'easy') {
             return expr;
@@ -251,6 +439,7 @@ class MathematicalCAPTCHA {
      */
     _getInstruction(difficulty, target) {
         const instructions = {
+            grandma: `Click all boxes showing the number ${target} (in any form)`,
             easy: `Select all expressions that equal ${target}`,
             medium: `Find all mathematical expressions that evaluate to ${target}`,
             hard: `Identify all expressions whose value is exactly ${target}`
@@ -263,6 +452,7 @@ class MathematicalCAPTCHA {
      */
     _generateHint(target, difficulty) {
         const hints = {
+            grandma: `Look for the number ${target}, the word for ${target}, or ${target} symbols`,
             easy: `Look for simple arithmetic that gives ${target}`,
             medium: `Remember: x^1 = x, and n!/n-1! = n`,
             hard: `Consider: integrals, summations, and special functions`
@@ -344,7 +534,9 @@ class MathematicalCAPTCHA {
      * Select target value based on difficulty
      */
     _selectTargetValue(difficulty) {
-        if (difficulty === 'easy') {
+        if (difficulty === 'grandma') {
+            return Math.floor(Math.random() * 5) + 1; // 1-5 only
+        } else if (difficulty === 'easy') {
             return Math.floor(Math.random() * 10) + 1; // 1-10
         } else if (difficulty === 'medium') {
             return Math.floor(Math.random() * 50) + 10; // 10-60
@@ -358,12 +550,13 @@ class MathematicalCAPTCHA {
      */
     _selectDisplayType(difficulty) {
         const types = {
+            grandma: ['large-text', 'symbols', 'word'],
             easy: ['standard', 'boxed'],
             medium: ['standard', 'boxed', 'circled', 'colored'],
             hard: ['standard', 'boxed', 'circled', 'colored', 'rotated', 'scaled']
         };
         
-        const available = types[difficulty];
+        const available = types[difficulty] || types.easy;
         return available[Math.floor(Math.random() * available.length)];
     }
 
@@ -475,7 +668,7 @@ class MathematicalCAPTCHA {
      * Get difficulty statistics
      */
     _getDifficultyStats() {
-        const stats = { easy: 0, medium: 0, hard: 0 };
+        const stats = { grandma: 0, easy: 0, medium: 0, hard: 0 };
         
         this.challenges.forEach(challenge => {
             stats[challenge.difficulty]++;
@@ -491,8 +684,21 @@ if (require.main === module) {
     
     const captcha = new MathematicalCAPTCHA();
     
+    // Generate grandma-friendly challenge
+    console.log('1. Grandma-Friendly Challenge:');
+    const grandma = captcha.generateChallenge('grandma');
+    console.log(`   Session: ${grandma.sessionId}`);
+    console.log(`   Instruction: ${grandma.instruction}`);
+    console.log(`   Help: ${grandma.helpMessage}`);
+    console.log('   Options:');
+    grandma.challenges.forEach(c => {
+        console.log(`     [${c.display}] - ${c.helpText}`);
+    });
+    console.log(`   Hint: ${grandma.hint}`);
+    console.log(`   Features: Extra large text, high contrast, audio help\n`);
+    
     // Generate easy challenge
-    console.log('1. Easy Challenge:');
+    console.log('2. Easy Challenge:');
     const easy = captcha.generateChallenge('easy');
     console.log(`   Session: ${easy.sessionId}`);
     console.log(`   Instruction: ${easy.instruction}`);
@@ -500,7 +706,7 @@ if (require.main === module) {
     console.log(`   Hint: ${easy.hint}\n`);
     
     // Generate medium challenge
-    console.log('2. Medium Challenge:');
+    console.log('3. Medium Challenge:');
     const medium = captcha.generateChallenge('medium');
     console.log(`   Session: ${medium.sessionId}`);
     console.log(`   Instruction: ${medium.instruction}`);
@@ -508,17 +714,18 @@ if (require.main === module) {
     medium.challenges.slice(0, 3).forEach(c => {
         console.log(`     - ${c.display} (${c.type})`);
     });
-    console.log(`   ... and ${medium.challenges.length - 3} more\n`);
+    console.log(`   ... and ${medium.challenges.length - 3} more`);
+    console.log(`   Calculator provided: ${medium.calculator}\n`);
     
     // Generate hard challenge
-    console.log('3. Hard Challenge:');
+    console.log('4. Hard Challenge:');
     const hard = captcha.generateChallenge('hard');
     console.log(`   Session: ${hard.sessionId}`);
     console.log(`   Instruction: ${hard.instruction}`);
     console.log(`   Complex expressions generated\n`);
     
     // Simulate verification
-    console.log('4. Simulating Verification:');
+    console.log('5. Simulating Verification:');
     // Select first 3 visual challenges (mix of valid/invalid)
     const userAnswers = medium.challenges.slice(0, 3).map(c => c.id);
     const result = captcha.verifyResponse(medium.sessionId, userAnswers);
@@ -528,7 +735,7 @@ if (require.main === module) {
     console.log(`   Attempts remaining: ${result.attemptsRemaining}\n`);
     
     // Generate accessible version
-    console.log('5. Accessible Alternative:');
+    console.log('6. Accessible Alternative:');
     const accessible = captcha.generateAccessibleChallenge(easy.sessionId);
     console.log(`   Text puzzles: ${accessible.challenges.length}`);
     if (accessible.challenges[0]) {
@@ -537,7 +744,7 @@ if (require.main === module) {
     console.log(`   Audio available: ${accessible.audio ? 'Yes' : 'No'}\n`);
     
     // Show statistics
-    console.log('6. CAPTCHA Statistics:');
+    console.log('7. CAPTCHA Statistics:');
     const stats = captcha.getStatistics();
     console.log(`   Active sessions: ${stats.active}`);
     console.log(`   Completed: ${stats.completed}`);
