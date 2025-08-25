@@ -272,7 +272,7 @@ Key points:
 
 *"If you find yourself working with Fractional Core, know that you're not just using a framework - you're part of a legacy that values transparency, security, and human dignity."*
 
-**— Lev Goukassian, January 2025**
+**— Lev Goukassian, August 2025**
 
 ---
 
