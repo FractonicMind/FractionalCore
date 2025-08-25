@@ -330,4 +330,5 @@ This is not merely a technical framework—it is a trust, a responsibility, and 
 **Created by Lev Goukassian • ORCID: 0009-0006-5966-1243**  
 **Email**: leogouk@gmail.com  
 **Successor Contact**: support@fc-goukassian.org  
+**See Succession Charter**: [FC-SUCCESSION-CHARTER.md](../FC-SUCCESSION-CHARTER.md)  
 **Protected under Memorial Covenant**
